@@ -15,17 +15,10 @@ import teclan.springboot.model.User;
 public class UserController {
 
 	@Resource
-	private User user;
-	@Resource
 	private JdbcTemplate jdbcTemplate;
-	
-	@RequestMapping("/user")
-	public User hello() {
-		return user;
-	}
 	
 	@RequestMapping("/user/query")
 	public List<Map<String,Object>> query() {
-		return jdbcTemplate.queryForList("select * from imm_userinfo limit 1,3");
+		return jdbcTemplate.queryForList("select * from users limit 1,3");
 	}
 }

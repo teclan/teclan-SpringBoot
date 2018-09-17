@@ -11,10 +11,10 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 public class DatabaseFactory {
 	
-	private @Value("${jdbc.driverClassName}") String driver;
-	private @Value("${jdbc.url}") String url;
-	private @Value("${jdbc.username}") String username;
-	private @Value("${jdbc.password}") String password;
+	private @Value("${datasource.driver-class-name}") String driver;
+	private @Value("${datasource.url}") String url;
+	private @Value("${datasource.username}") String username;
+	private @Value("${datasource.password}") String password;
 	
 	@Bean(name="jdbcTemplate")
 	public JdbcTemplate getJdbcTemplate() {
