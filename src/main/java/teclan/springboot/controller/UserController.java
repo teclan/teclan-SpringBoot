@@ -27,7 +27,14 @@ public class UserController {
 
 	@RequestMapping("/user/get")
 	public Users1 get(Long id) {
-		return users1Mapper.selectByPrimaryKey(1L);
+		return users1Mapper.selectByPrimaryKey(id);
 	}
+
+
+	@RequestMapping("/user/findOne")
+	public Users1 findOne(Long id) {
+		return users1Mapper.findOne(id);
+	}
+
 
 }

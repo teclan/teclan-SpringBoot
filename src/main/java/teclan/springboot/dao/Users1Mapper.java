@@ -96,4 +96,7 @@ public interface Users1Mapper {
         "where id = #{id,jdbcType=BIGINT}"
     })
     int updateByPrimaryKey(Users1 record);
+
+    Users1 findOne(Long id);
+
 }
