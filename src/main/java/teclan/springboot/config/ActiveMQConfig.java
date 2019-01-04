@@ -74,7 +74,10 @@ public class ActiveMQConfig {
 
     @Bean
     public JmsMessagingTemplate getJmsMessagingTemplate(ActiveMQConnectionFactory connectionFactory) {
-        return new JmsMessagingTemplate(connectionFactory);
+
+        JmsMessagingTemplate jmsMessagingTemplate = new JmsMessagingTemplate(connectionFactory);
+        jmsMessagingTemplate.getJmsTemplate().setDeliveryPersistent(true);
+        return jmsMessagingTemplate;
     }
 
     @Bean
