@@ -5,5 +5,6 @@ datasource:
     password: root
 
 mybatis:
-    typeAliasesPackage: teclan.spring
-    mapperLocations: classpath:*.xml
+    mapper-locations: classpath:mapper/*.xml
+
+
