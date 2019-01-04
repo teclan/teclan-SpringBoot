@@ -20,7 +20,7 @@ public interface ActiveMQProduceService {
      * 接收消息
      * @param message
      */
-    public boolean receiveQueueMsg(String message) throws UnImplementException;
+    public void receiveQueueMsg(String message) ;
 
 
     /**
@@ -33,5 +33,5 @@ public interface ActiveMQProduceService {
      * 接收消息
      * @param message
      */
-    public boolean receiveTopicMsg(String message) throws UnImplementException;
+    public void receiveTopicMsg(String message)  ;
 }

@@ -5,6 +5,7 @@ import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
@@ -37,40 +38,9 @@ public class ActiveMQConfig {
     @Value("${activemq.broker-url}")
     private String brokerUrl;
     @Value("${activemq.user}")
-    private String usrName;
+    private String user;
     @Value("${activemq.password}")
     private String password;
-
-    @Value("${activemq.queueName1}")
-    private String queue1;
-    @Value("${activemq.queueName2}")
-    private String queue2;
-
-    @Value("${activemq.topicName1}")
-    private String topic1;
-    @Value("${activemq.topicName2}")
-    private String topic2;
-
-
-    @Bean(name = "queue1")
-    public Queue getQueue1() {
-        return new ActiveMQQueue(queue1);
-    }
-
-    @Bean(name = "queue2")
-    public Queue getQueue2() {
-        return new ActiveMQQueue(queue2);
-    }
-
-    @Bean(name = "topic1")
-    public Topic getTopic1() {
-        return new ActiveMQTopic(topic1);
-    }
-
-    @Bean(name = "topic2")
-    public Topic getTopic2() {
-        return new ActiveMQTopic(topic2);
-    }
 
 
     @Autowired
@@ -78,15 +48,13 @@ public class ActiveMQConfig {
 
     @Bean
     public ActiveMQConnectionFactory connectionFactory() {
-        ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory(usrName, password, brokerUrl);
+        ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory(user, password, brokerUrl);
         return activeMQConnectionFactory;
     }
 
-
-
     // topic模式的ListenerContainer
-    @Bean(name = "jmsListenerContainerTopic")
-    public JmsListenerContainerFactory<?> jmsListenerContainerTopic(ConnectionFactory activeMQConnectionFactory) {
+    @Bean(name = "topicListenerContainer")
+    public JmsListenerContainerFactory<?> getTopicJmsListenerContainer(ConnectionFactory activeMQConnectionFactory) {
         DefaultJmsListenerContainerFactory bean = new DefaultJmsListenerContainerFactory();
         bean.setPubSubDomain(true);
         bean.setConnectionFactory(activeMQConnectionFactory);
@@ -94,13 +62,12 @@ public class ActiveMQConfig {
     }
 
     // queue模式的ListenerContainer
-    @Bean(name = "jmsListenerContainerQueue")
-    public JmsListenerContainerFactory  getJmsListenerContainerQueue(ConnectionFactory activeMQConnectionFactory,MessageListenerAdapter messageListenerAdapter) {
+    @Bean(name = "queueListenerContainer")
+    public JmsListenerContainerFactory  getQueueJmsListenerContainer(ConnectionFactory activeMQConnectionFactory) {
         DefaultJmsListenerContainerFactory bean = new DefaultJmsListenerContainerFactory();
         bean.setConnectionFactory(activeMQConnectionFactory);
         bean.setErrorHandler(activeMQErrorHandler);
         bean.setPubSubDomain(false);
-        //bean.setMessageListener(messageListenerAdapter);
         return bean;
     }
 
@@ -109,15 +76,6 @@ public class ActiveMQConfig {
     public JmsMessagingTemplate getJmsMessagingTemplate(ActiveMQConnectionFactory connectionFactory) {
         return new JmsMessagingTemplate(connectionFactory);
     }
-
-    @Bean
-    public MessageListenerAdapter getMessageListenerAdapter(){
-        MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter();
-        messageListenerAdapter.setDefaultResponseQueueName("response-queue");
-        messageListenerAdapter.setDefaultResponseTopicName("response-topic");
-        return messageListenerAdapter;
-    }
-
 
     @Bean
     public JmsTemplate getJmsTemplate(ActiveMQConnectionFactory connectionFactory) {

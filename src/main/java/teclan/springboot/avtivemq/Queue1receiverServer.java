@@ -1,5 +1,6 @@
 package teclan.springboot.avtivemq;
 
+import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsMessagingTemplate;
@@ -17,20 +18,11 @@ import javax.jms.Queue;
  * @Date: 2019/1/4 10:31
  **/
 @Component
-public class Queue1receiveerServer extends AbstractActiveMQProDuceService {
+public class Queue1receiverServer extends AbstractActiveMQProDuceService {
 
     private static final String QUEUE_NAME = "queue1";
 
-    @Resource(name = QUEUE_NAME)
-    private Queue queue;
-
-
-    @Override
-    protected JmsMessagingTemplate getJmsMessagingTemplate() {
-        jmsMessagingTemplate.setDefaultDestination(getQueue());
-        return jmsMessagingTemplate;
-    }
-
+    private Queue queue = new ActiveMQQueue(QUEUE_NAME);
 
     @Override
     protected String getQueueName() {
@@ -42,21 +34,20 @@ public class Queue1receiveerServer extends AbstractActiveMQProDuceService {
         return queue;
     }
 
+
     /**
      * 接收消息
      *
      * @param message
      */
-    @JmsListener(destination = "queue1", containerFactory = "jmsListenerContainerQueue")
-//    @JmsListener(destination = "queue1")
+    @JmsListener(destination = QUEUE_NAME, containerFactory = "queueListenerContainer")
     @Override
-    public boolean receiveQueueMsg(String message) throws UnImplementException {
+    public void receiveQueueMsg(String message)   {
         try {
-            return receiveQueueMsg(getQueueName(), message);
+             super.receiveQueueMsg( message);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
-        return false;
     }
 
 }
