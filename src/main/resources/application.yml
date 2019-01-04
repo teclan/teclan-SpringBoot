@@ -1,6 +1,9 @@
 datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/teclan?useUnicode=true&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/teclan?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC
     username: root
-    password: 123456
-    
+    password: root
+
+mybatis:
+    typeAliasesPackage: teclan.spring
+    mapperLocations: classpath:*.xml

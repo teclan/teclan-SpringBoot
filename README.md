@@ -2,6 +2,34 @@
 
 参考项目 [teclan-SpringBoot](https://github.com/teclan/teclan-SpringBoot)
 
+## mybatis相关配置
+
+- 1 ${classpath}/generatorConfig.xml 为自动生成sql的配置，注意配置一下几个地方
+
+``` 
+
+...
+<jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/teclan?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false&amp;serverTimezone=UTC"
+                        userId="root"
+                        password="root">
+</jdbcConnection>
+ ...
+ 
+ <!-- 以下每个表都需要配置 -->
+ <table tableName="users1" domainObjectName="Users1"
+                enableCountByExample="false" enableUpdateByExample="false"
+                enableDeleteByExample="false" enableSelectByExample="false"
+                selectByExampleQueryId="false">
+         </table>
+
+...
+
+```
+
+- 2 配置之后，执行 `mvn mybatis-generator:generate` 即可生成实体类个接口
+
+
 ## 问题与解决方案
 
 ### 1.mysql无法连接导致的启动失败
@@ -339,4 +367,54 @@ Consider the following:
     </dependency>
 ```
 
+## Mybatis生成的Mapper文件无法注入
  
+ 提示如下：
+ 
+ ``` 
+org.springframework.beans.factory.UnsatisfiedDependencyException: 
+Error creating bean with name 'userController': Unsatisfied dependency
+ expressed through field 'users1Mapper'; nested exception is 
+ org.springframework.beans.factory.UnsatisfiedDependencyException:
+  Error creating bean with name 'users1Mapper' defined in file 
+  [E:\tanbingjian\Depository\Codes\opensources\teclan-SpringBoot\target
+  \classes\teclan\springboot\dao\Users1Mapper.class]: 
+  Unsatisfied dependency expressed through bean property 
+  'sqlSessionFactory'; nested exception is org.springframework.beans.
+  factory.BeanCreationException: Error creating bean with name 
+  'sqlSessionFactory' defined in class path resource 
+  [org/mybatis/spring/boot/autoconfigure/MybatisAutoConfiguration.class]: 
+  Bean instantiation via factory method failed; nested exception is 
+  org.springframework.beans.BeanInstantiationException: Failed to 
+  instantiate [org.apache.ibatis.session.SqlSessionFactory]: Factory method 
+  'sqlSessionFactory' threw exception; nested exception 
+  is org.springframework.core.NestedIOException: Failed to parse mapping resource: 
+  'file [E:\tanbingjian\Depository\Codes\opensources\teclan-SpringBoot\target\classes\generatorConfig.xml]'; 
+  nested exception is org.apache.ibatis.builder.BuilderException: Error parsing 
+  Mapper XML. The XML location is 'file [E:\tanbingjian\Depository\Codes\opensources\teclan-SpringBoot\target\
+  classes\generatorConfig.xml]'. Cause: java.lang.NullPointerException
+``` 
+ 
+ 解决办法：
+ 
+ 添加一下配置:
+ 
+ ```
+ 
+	@Bean(name="dataSource")
+	public DataSource getDataSource() {
+		HikariConfig config = new HikariConfig();
+		config.setDriverClassName(driver);
+		config.setJdbcUrl(url);
+		config.setUsername(username);
+		config.setPassword(password);
+		return new HikariDataSource(config);
+	}
+
+	@Bean(name="sqlSessionFactory")
+	public SqlSessionFactory getSqlSessionFactory() throws Exception {
+		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+		sqlSessionFactoryBean.setDataSource(getDataSource());
+		return sqlSessionFactoryBean.getObject();
+	}
+```
