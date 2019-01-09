@@ -42,7 +42,7 @@ public class Queue1receiverServer extends AbstractActiveMQProDuceService {
      */
     @JmsListener(destination = QUEUE_NAME, containerFactory = "queueListenerContainer")
     @Override
-    public void receiveQueueMsg(String message)   {
+    public void receiveQueueMsg(Object message)   {
         try {
              super.receiveQueueMsg( message);
         } catch (Exception e) {

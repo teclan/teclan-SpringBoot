@@ -17,10 +17,23 @@ public interface ActiveMQProduceService {
     public boolean sendQueueMsg(String message);
 
     /**
+     * 发送消息
+     * @param message
+     */
+    public boolean sendQueueMsg(Object message);
+
+
+    /**
      * 接收消息
      * @param message
      */
     public void receiveQueueMsg(String message) ;
+
+    /**
+     * 接收消息
+     * @param message
+     */
+    public void receiveQueueMsg(Object message) ;
 
 
     /**
