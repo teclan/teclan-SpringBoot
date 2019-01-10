@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import teclan.springboot.rabbitmq.Queue1SendServer;
+import teclan.springboot.rabbitmq.Queue2SendServer;
 
 /**
  * @ClassName: RabbitMQController
@@ -17,10 +18,18 @@ public class RabbitMQController {
 
     @Autowired
     private Queue1SendServer queue1SendServer;
+    @Autowired
+    private Queue2SendServer queue2SendServer;
 
     @RequestMapping(value = "send/queue1", method = RequestMethod.POST)
     public String sendQueue1(String msg) {
         queue1SendServer.sendMessage(msg);
+        return "200";
+    }
+
+    @RequestMapping(value = "send/queue2", method = RequestMethod.POST)
+    public String sendQueue2(String msg) {
+        queue2SendServer.sendMessage(msg);
         return "200";
     }
 }
